@@ -1,0 +1,72 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[newdimens]{labels}
+\usepackage{tikz}      % to add the logo in the corner
+\usepackage{forloop}   % to be able to loop over the number of labels to be created
+\LabelCols=2
+\LabelRows=4
+\LabelInfotrue
+\LeftPageMargin=12mm    % These four parameters give the
+\RightPageMargin=5mm   % page gutter sizes. The outer edges of
+\TopPageMargin=15mm     % the outer labels are the specified
+\BottomPageMargin=20mm  % distances from the edge of the paper.
+\InterLabelColumn=0mm  %
+\InterLabelRow=0mm     % Gap between rows of labels
+\LeftLabelBorder=0mm   % These four parameters give the extra
+\RightLabelBorder=0mm  % space used around the text on each
+\TopLabelBorder=0mm    % actual label.
+\BottomLabelBorder=0mm %
+
+% defining the card length and width
+\newlength{\lw}
+\newlength{\lh}
+\setlength{\lw}{3.46in} % 3.46 3.474
+\setlength{\lh}{2.16in} % 2.16 2.175
+
+\usepackage[many]{tcolorbox}
+\newtcbox{\myboxA}{blank,boxsep=1mm,
+	clip upper,minipage,
+	width=\lw, height=\lh, nobeforeafter,
+	borderline={0pt}{0pt}{white},
+}
+
+\usepackage{readarray}
+
+\readarraysepchar{;}
+%\readarraysepchar{}
+\readdef{names_formatted.csv}{\dataA}
+\readarray\dataA\twoD[-,\ncols]
+
+
+\definecolor{Kcol2}{RGB}{32.0, 86.0, 174.0}
+
+% function to generate the label content
+\newcommand{\Hom}[1]{
+	\addresslabel[\fboxsep=3pt]{
+		\myboxA{
+			\begin{tikzpicture}[remember picture,overlay]
+				\node[inner sep=0pt] at (.5\lw,-.5\lh+.2em){\includegraphics[height=\lh]{shapes/\twoD[#1,3].pdf}};
+			%	\node[inner sep=0pt] at (.78\lw,-.15\lh+.2em){\includegraphics[height=1.9em]{SPP_Logo_mit_text.jpeg}};
+			%	\node[inner sep=0pt] at (.3\lw,-.15\lh){\includegraphics[height=1.3em]{DFG-logo-blau.svg.png}};
+				\node[text width = .85\lw, execute at begin node=\setlength{\baselineskip}{1.7em}, align=center] at (.5\lw, -.485\lh){\large{\textbf{\twoD[#1,1]}}};
+				\node[text width = .9\lw, execute at begin node=\setlength{\baselineskip}{.2em}, align=center] at (.5\lw, -.67\lh){\textcolor{Kcol2}{\twoD[#1,2]}};
+			%	\node[inner sep=0pt] at (.5\lw, -.8\lh){Coordination Workshop SPP 1158};
+			\end{tikzpicture}
+}}}
+
+% setting the document font
+\usepackage{fontspec}
+%\setmainfont{Junicode}
+\setmainfont{CrimsonText}[
+Path=./fnt/Crimson_Text/,
+Extension=.ttf,
+UprightFont=*-Regular,
+ItalicFont=*-Italic,
+BoldFont=*-Bold,
+BoldItalicFont=*-BoldItalic
+]
+
+\begin{document}
+	{
+		\newcounter{ct}
+		\forloop{ct}{1}{\value{ct} <9}{\Hom{\arabic{ct}}}
+\end{document}
